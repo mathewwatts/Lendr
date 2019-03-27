@@ -1,0 +1,110 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.css" />
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.css" />
+
+<p id="notice"><%= notice %></p>
+
+<h1>Item Listing</h1>
+
+<p>
+  <strong>Name:</strong>
+  <%= @item.name %>
+</p>
+
+<p>
+  <strong>Category:</strong>
+  <%= @item.category.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @item.description %>
+</p>
+
+<p>
+  <strong>Terms:</strong>
+  <%= @item.terms %>
+</p>
+
+<div class="image-slider">
+  <% @item.images.each do |image| %>
+    <div>
+      <%= image_tag(image, height: '400') %>
+    </div>
+  <% end %>
+</div>
+
+<p>
+  <strong>Price:</strong>
+  <%= number_to_currency(@item.price/100.0) %>
+</p>
+
+<p>
+  <strong>Suburb:</strong>
+  <%= @item.suburb %>
+</p>
+
+<p>
+  <strong>State:</strong>
+  <%= @item.state %>
+</p>
+
+<br><br>
+
+<h2>RENT NOW.</h2>
+
+<% if user_signed_in? %> 
+  <% if @item.next_available < Time.now %>
+    <strong>AVAILABLE: This listing is available for rent now!</strong>
+
+    <br><br>
+
+      <%= form_tag charges_path do %>
+        <article>
+          <% if flash[:error].present? %>
+            <div id="error_explanation">
+              <p><%= flash[:error] %></p>
+            </div>
+          <% end %>
+        </article>
+        <%= hidden_field_tag(:item_id, @item.id) %>
+        <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                data-key="<%= Rails.configuration.stripe[:publishable_key] %>"
+                data-description="<%= @item.name %>"
+                data-amount="<%= @item.price %>"
+                data-currency="AUD"
+                data-locale="auto"></script>
+      <% end %>
+
+    <% else %>
+    <strong>UNAVAILABLE: This listing is unfortunately unavailable for rent at the moment.</strong>
+  <% end %>
+  <% else %>
+  <br><br>
+  <strong>Sign Up or Login to rent this item!</strong>
+<% end %>
+<br><br>
+<hr>
+<br>
+
+<h3>COMMENTS</h3>
+
+<p>
+  <% @item.comments.each do |comment| %>
+    <div>
+      <%= comment.review %>
+      <p><em>Rating: <strong><%= comment.rating %></strong></em></p>
+      <p><em> posted by <strong><%= comment.user.email %> </strong></em></p>
+      <hr>
+    </div>
+  <% end %>
+</p>
+
+
+<br><br>
+<% if @item.user == current_user %>  
+  <%= link_to 'Edit', edit_item_path(@item) %> |
+<% end %>
+<%= link_to 'Back', items_path %>
+
+

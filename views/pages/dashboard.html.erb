@@ -1,0 +1,80 @@
+<div>
+
+    <h1>DASHBOARD</h1>
+
+    <br><br>
+
+    <% if user_signed_in? %>
+
+        <h3>Welcome back, <%= @user.first_name %>!</h3>
+
+        <h4>ACCOUNT SETTINGS</h4>
+            Name: <%= @user.first_name %> <%= @user.last_name %>
+        <br/>
+            Username: <%= @user.email %>
+        <br/>
+            Update Profile: <%= link_to "Edit", edit_user_registration_path %>
+
+
+        <br><br>
+
+        <h3>MY FOR RENT LISTINGS</h3>
+        <table>
+            <tr>
+                <th>Item Name</th>
+                <th>Item Description</th>
+                <th>Price</th>
+                <th>Suburb</th>
+                <th>Preview</th>
+            </tr>
+        <tbody>
+            <% @user.items.each do |item| %>
+            <tr>
+                <td><%= item.name %> </td>
+                <td><%= item.description %> </td>
+                <td><%= number_to_currency(item.price/100.0) %></td>
+                <td><%= item.suburb %></td>
+                <td><%= image_tag item.images.first, height: '80'%></td>
+                <td><%= link_to 'Show', item %></td>
+                <% if item.user == current_user %>
+                    <td><%= link_to 'Edit', edit_item_path(item) %></td>
+                    <td><%= link_to 'Destroy', item, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+                <% end %>
+            <% end %>
+            </tr>
+        </tbody>
+        </table>
+
+        <br><br>
+
+        <h3>ITEMS RENTED IN THE PAST</h3>
+
+        <table>
+            <tr>
+                <th>Item Name</th>
+                <th>Item Description</th>
+                <th>Price</th>
+                <th>Suburb</th>
+                <th>Preview</th>
+            </tr>
+        <tbody>
+            <% @user_transaction.each do |transaction| %>
+            <tr>
+                <td><%= transaction.item.name %> </td>
+                <td><%= transaction.item.description %> </td>
+                <td><%= number_to_currency(transaction.item.price/100.0) %> </td>
+                <td><%= transaction.item.suburb %></td>
+                <td><%= image_tag transaction.item.images.first, height: '80'%></td>
+                <td><%= link_to 'Show', transaction %></td>
+                <td><%= link_to 'Edit', edit_item_path(transaction.item) %></td>
+                <td><%= link_to 'Destroy', transaction.item, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+
+            <% end %>
+
+            </tr>
+        </tbody>
+        </table>
+
+    <% end %>
+    
+</div>

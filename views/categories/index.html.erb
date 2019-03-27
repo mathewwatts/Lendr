@@ -1,0 +1,23 @@
+<div class='grid-browse-page'>
+
+    <div class='browse-search'>
+        <%= form_tag("/items", method: "get") do %>
+        <div class='field'>
+            <input type="text" name="search" required size="60", >
+            <%= label_tag(:search, "What are we looking for today?") %>
+        </div>
+        <%= submit_tag("Search", class: "search-btn") %>
+        <% end %>
+    </div>
+
+    <div class="browse-category-grid">
+        <% @categories.each do |category| %>
+            <div class="style-<%= category.name.downcase %>">
+                <%= link_to (image_tag "#{category.name.downcase}.svg", size: "30"), category, :alt => "#{category.name}"%>
+                <p class="category-title"><small><%= link_to category.name.upcase, category %></small></p>
+            </div>
+        <% end %>
+    </div>
+
+
+</div>
